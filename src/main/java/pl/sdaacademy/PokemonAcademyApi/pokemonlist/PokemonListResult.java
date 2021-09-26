@@ -3,13 +3,23 @@ package pl.sdaacademy.PokemonAcademyApi.pokemonlist;
 import java.util.List;
 
 public class PokemonListResult {
-    private List<Pokemon> results;
 
-    public List<Pokemon> getResults() {
+    private String next;
+    private List<PokemonItem> results;
+
+    public List<PokemonItem> getResults() {
         return results;
     }
 
-    public void setResults(List<Pokemon> results) {
+    public void setResults(List<PokemonItem> results) {
         this.results = results;
+    }
+
+    public String getNext() {
+        return next;
+    }
+
+    public void setNext(String next) {
+        this.next = next;
     }
 }

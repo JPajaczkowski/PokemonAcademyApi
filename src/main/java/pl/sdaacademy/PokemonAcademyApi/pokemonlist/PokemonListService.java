@@ -3,18 +3,42 @@ package pl.sdaacademy.PokemonAcademyApi.pokemonlist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class PokemonListService {
+class PokemonListService {
+    private final PokemonRepository pokemonRepository;
     private final PokemonListNetworkRepository pokemonListNetworkRepository;
+    private final PokemonTransformer pokemonTransformer;
 
     @Autowired
-    public PokemonListService(PokemonListNetworkRepository pokemonListNetworkRepository) {
+    PokemonListService(PokemonRepository pokemonRepository,
+                       PokemonListNetworkRepository pokemonListNetworkRepository,
+                       PokemonTransformer pokemonTransformer) {
+        this.pokemonRepository = pokemonRepository;
         this.pokemonListNetworkRepository = pokemonListNetworkRepository;
+        this.pokemonTransformer = pokemonTransformer;
     }
 
-    public List<Pokemon> getPokemonList() {
-        return pokemonListNetworkRepository.fetchPokemonList().getResults();
+    List<Pokemon> getPokemonList() {
+        if (pokemonRepository.count() != 0) {
+            return pokemonRepository.findAll();
+        }
+        final List<Pokemon> pokemons = new ArrayList<>();
+        int offset = 0;
+        int limit = 100;
+        PokemonListResult pokemonListResult;
+        do {
+            pokemonListResult = pokemonListNetworkRepository.fetchPokemonList(offset, limit);
+            pokemons.addAll(pokemonListResult.getResults().stream()
+                    .map(pokemonTransformer::toEntity)
+                    .collect(Collectors.toList())
+            );
+            offset+=limit;
+        } while (pokemonListResult.getNext() != null);
+        pokemonRepository.saveAll(pokemons);
+        return pokemons;
     }
 }
