@@ -11,7 +11,7 @@ class PokemonListNetworkRepository {
     private final RestTemplate restTemplate;
     private final String endpointUrl;
 
-    PokemonListNetworkRepository(@Value("${pokeapi.url}") String baseUrl,
+    PokemonListNetworkRepository(@Value("${pokemonapi.url}") String baseUrl,
                                  RestTemplate restTemplate) {
         this.endpointUrl = baseUrl + ENDPOINT;
         this.restTemplate = restTemplate;

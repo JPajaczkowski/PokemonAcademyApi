@@ -21,7 +21,7 @@ public class RestTemplateExample {
 
     @GetMapping("/v1")
     public Planet getPlanet() {
-        RestTemplate restTemplate= new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
         String url = "https://swapi.dev/api/planets/1/?format=json";
         Planet planet = restTemplate.getForObject(url, Planet.class);
         return planet;
